@@ -64,11 +64,20 @@ class Library:
     
     def lend_book(self, member: Member, book: Book):
 
-        active_late_lendings = filter(lambda transaction: transaction.member == member and transaction.last_give_back_date < datetime.utcnow(), self.lending_transactions)
+        active_late_lendings = filter(
+            lambda transaction: transaction.member == member 
+                and transaction.is_active == True
+                and transaction.last_give_back_date < datetime.utcnow(), 
+            self.lending_transactions)
+
         if active_late_lendings:
             raise Exception("You are late for some books. Please, give back them first.")
         
-        late_lendings = filter(lambda transaction: transaction.member == member and transaction.last_give_back_date < transaction.give_back_date, self.lending_transactions)
+        late_lendings = filter(
+            lambda transaction: transaction.member == member 
+            and transaction.last_give_back_date < transaction.give_back_date, 
+            self.lending_transactions)
+            
         total_penalty = ceil(sum((transaction.give_back_date - transaction.last_give_back_date).days for transaction in late_lendings)) * self.daily_penalty_for_late_give_back
         
         payments = filter(lambda transaction: transaction.member == member, self.payment_transactions)
