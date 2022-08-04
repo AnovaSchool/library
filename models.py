@@ -77,7 +77,7 @@ class Library:
             lambda transaction: transaction.member == member 
             and transaction.last_give_back_date < transaction.give_back_date, 
             self.lending_transactions)
-            
+
         total_penalty = ceil(sum((transaction.give_back_date - transaction.last_give_back_date).days for transaction in late_lendings)) * self.daily_penalty_for_late_give_back
         
         payments = filter(lambda transaction: transaction.member == member, self.payment_transactions)
@@ -97,6 +97,8 @@ class Library:
             raise Exception(f"You have this book.")
         
         # Kullanici toplamda librarynin limitine dayanmissa
+        # test
+        
 
 
 if __name__ == "__main__":
