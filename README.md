@@ -16,8 +16,10 @@ isbn - string
 LendingTransaction
 member - Member object
 book - Book object
+last_give_back_date_time - datetime
+id - str
+give_back_date_- datetime
 borrow_date - datetime
-giveback_date - datetime
 is_active - bool - Eğer kitap geri verilmişse False değilse True.
 
 PaymentTransactions
@@ -27,11 +29,15 @@ created_at - datetime
 
 Library 
 name - str
-books - List of book
+lending_day - int 
+lending_count - int 
+daily_penalty_for_late_give_back - Decimal
 members - List of member
-transaction - List of LendingTransaction
+lending_transactions - list of Lending Transaction
+payment_transactions: list of Payment Transaction
+books: list of Book
 created_at - datetime
-payment_transactions - List of PaymentTransaction
+
 
 Fonksiyonlar
 Library definition with default lending day.
