@@ -39,16 +39,14 @@ books: list of Book
 created_at - datetime
 
 
-Fonksiyonlar
+Functions
 Library definition with default lending day.
-Kütüphaneye kitap ekleme. Kütüphane içerisindeki books’a eklenecek. 
-Kütüphaneye üye ekleme. Kütüphane içerisindeki member’a eklenecek. Aynı kişi tekrar üye olarak eklenemez.
-Kitap ödünç alma. Kütüphane içerisindeki transactions’a eklenecek. Aynı kitap aynı kullanıcı tarafından aynı anda 2 defa ödünç alınamayacak. Kullanıcının hali hazırda borcu varsa o zaman yeni kitap alamaz. Bir üye aynı anda en fazla 3 kitap alabilir.
-Kitap geri verme. 
-Şu an kütüphaneden ödünç alınan ve geri getirilmeyen kitapların listesi.
-Şu an kütüphaneden ödünç alınan ve süresinde geri getirilmemiş kitapların listesi. Normal geri verme süresi 15 gündür.
-Kütüphane üyelerini listeleme.
-Bir kullanıcının toplam cezasını hesaplama. Bir kitabı 15 günden fazla elinde tutarsa her gün için 3 TL ceza öder.
-Kullanıcı ceza ödeme. 
-Library’de şu an ne kadar para var?
+Add books to library. Books will add to the books that we created in Library class.
+Register member to the library.Members will add to the members that we created in Library class. Same person can't register again.
+Lend book. Lending transactions will add to the lending transactions that we created in Library class. Member can't get the same book twice. If a user has penalty user can't lend new book. User can lend maximum 3 books.
 
+Return the book to the library. 
+List the members of library.
+Calculate the total penalty of an user. If an user holds book over 15 days user pays penalty for each day of library's penalty amount of a day. 
+User penalty payment 
+How much money Library's got ? 
