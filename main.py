@@ -8,9 +8,12 @@ if __name__ == "__main__":
     book_hortumlu_dunya = Book(name="Su hortumlu dunyada fil yalniz bir hayvandir", isbn="68618505148")
     book_nutuk = Book(name="Nutuk", isbn="68618505149")
     book_python = Book(name="Python", isbn="68618505150")
-
     member_serkan_uz = Member(name="Serkan Uz")
     member_utku_atak = Member(name="Utku Atak")
+
+    lending1 = LendingTransaction(member_utku_atak,book_python,last_give_back_date=2022/12/31,give_back_date=2022/12/1)
+
+    
 
     richmond_library.register_book(book_avucunuzdaki_kelebek)
     richmond_library.register_book(book_hortumlu_dunya)
@@ -23,12 +26,12 @@ if __name__ == "__main__":
 
     richmond_library.show_members()
 
-    richmond_library.giveback_book_list()
+    richmond_library.active_book_list()
 
     richmond_library.lend_book(member_serkan_uz,book_avucunuzdaki_kelebek)
-    ## bu daha ilk lend book ve you are late for some books uyarısı alıyoruz.
+    
     richmond_library.lend_book(member_serkan_uz,book_hortumlu_dunya)
     richmond_library.lend_book(member_serkan_uz,book_hortumlu_dunya)
     richmond_library.lend_book(member_serkan_uz,book_nutuk)
-    richmond_library.lend_book(member_serkan_uz,book_python)   
+    richmond_library.lend_book(member_utku_atak,book_python)   
     

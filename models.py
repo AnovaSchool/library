@@ -5,6 +5,7 @@ from math import ceil
 from telnetlib import EC
 import uuid
 from dateutil import parser
+from collections import Counter
 
 @dataclass
 class Person:
@@ -12,7 +13,8 @@ class Person:
 
 @dataclass
 class Member(Person):
-    pass
+    def __str__(self):
+        return self.name
 
 @dataclass
 class Employee(Person):
@@ -31,9 +33,9 @@ class Book:
 class LendingTransaction:
     member: Member
     book: Book
-    last_give_back_date: datetime
+    last_give_back_date: datetime.date
     id: str = str(uuid.uuid4())
-    give_back_date: datetime = None
+    give_back_date: datetime.date = None
     borrow_date: datetime = datetime.utcnow()
     is_active: bool = True
 
@@ -58,18 +60,28 @@ class Library:
     def register_member(self, member: Member):
 
         if member in self.members:
-            print("This user is already registered.")
+            print("This user is already registered.")   ## This should be raise Exception but I'm trying so I wrote there print
 
         else:
             self.members.append(member)
             print(f"Member {member.name} is registered.")
 
     def show_members(self):
-        print(f'{self.members}')
-    
+        for member in self.members:
+            print(member)
+
     def register_book(self, book: Book):
         self.books.append(book)
-    
+
+    def active_book_list(self):
+        # x = Counter(self.books)
+        # a= [[x,self.books.count(x)] for x in set(self.books)]
+        
+        i= 1
+        for book in self.books:
+            print(f"{i} : {book} ")
+            i+= 1
+            
     def give_back_book(self, member: Member, book: Book):
         active_lendings = filter(
             lambda transaction: transaction.member == member \
@@ -90,9 +102,6 @@ class Library:
         for transaction in self.lending_transactions:
             if transaction.book == book and transaction.member == member and transaction.is_active == True:
                 transaction = lending
-        
-
-
         
     def find_member_penalty(self, member: Member):
         late_lendings = filter(
@@ -116,39 +125,33 @@ class Library:
             
     
     def lend_book(self, member: Member, book: Book):
-        # if user has late book
         active_late_lendings = filter(
             lambda transaction: transaction.member == member \
                 and transaction.is_active == True \
-                and transaction.last_give_back_date < datetime.utcnow(), 
+                and datetime.utcnow() < transaction.last_give_back_date, 
             self.lending_transactions)
 
-        if not active_late_lendings:
+        if active_late_lendings:
             print(f'{member.name}, {book.name} You are late for some books. Please, give back them first.') 
-            ## If a person is unpaid he can't get any book from library. He can't have books.
-            ## Bunu her türlü yazıyor. 
-            # Unpaid penalties
-        
+        ### Her kitap alan birey için late for some books uyarısı vermekte. 
+           
         penalty = self.find_member_penalty(member=member)
         if penalty:
             print("Pay your penalty.")
-        ## We used the same thing in def give_back_book we need to check it out. 
 
         active_lendings = list(filter(lambda transaction: transaction.member == member and transaction.is_active == True, self.lending_transactions))
         
         if len(active_lendings) >= self.default_lending_count:
             print("You have reached library book lending limit. Please, give back some of our books.")
-        ## TypeError: object of type 'filter' has no len() ## aldığımız hata bu.
-
+        
         active_same_lendings = list(filter(lambda transaction: transaction.member == member and transaction.book == book and transaction.is_active == True, self.lending_transactions))
-        print(active_same_lendings)
         if active_same_lendings:
             print("You have this book.")
-        
-        
+   
         self.lending_transactions.append(LendingTransaction(member=member, book=book, last_give_back_date=datetime.utcnow() + timedelta(days=self.default_lending_day)))
-
-
+    ## giveback geri verdiğimiz kitap 
+    ## lend book kütüphaneden aldığımız kitap 
+    ## Alınan kitap book listten remove edilmeli. Ama kaç tane aynı kitaptan olduğunu saydıramıyoruz.
     def giveback_book(self,member: Member, book: Book):
     
         active_giveback_books = filter(lambda transaction: transaction.member == member \
@@ -156,10 +159,10 @@ class Library:
             and transaction.is_active == False, self.lending_transactions)
 
         if active_giveback_books:
-            self.lending_transactions.append(active_giveback_books),
+            self.lending_transactions.append(active_giveback_books)
+            
+
     
-    def giveback_book_list(self):
-        for book in self.books:
-            print(book)
- ### FAST API OKU ARAŞTIR
+    
  
+    
