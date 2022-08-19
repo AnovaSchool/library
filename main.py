@@ -32,13 +32,3 @@ if __name__ == "__main__":
     richmond_library.lend_book(member_serkan_uz,book_nutuk)
     richmond_library.lend_book(member_serkan_uz,book_python)   
     
- ### İlk lend bookta sıkıntı çıkmaması gerekiyor ya ama çıkıyor 
- ## Bu aldığı ilk kitap avucunuzdaki kelebek çıkmaması gerek
-
-
-
-
-
-
-
-
