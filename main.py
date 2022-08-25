@@ -29,9 +29,6 @@ if __name__ == "__main__":
     # richmond_library.register_lending(lending2)
     # richmond_library.register_lending(lending3)
     
-    
-
-
     richmond_library.show_members()
 
     richmond_library.active_book_list()
