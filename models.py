@@ -52,10 +52,12 @@ class PaymentTransaction:
 
 @dataclass
 class Library:
+    
     name: str
     default_lending_day: int 
     default_lending_count: int 
     daily_penalty_for_late_give_back: Decimal
+    total_library_money: Decimal = 0
     members: list[Member] = field(default_factory=list)
     lending_transactions: list[LendingTransaction] = field(default_factory=list)
     payment_transactions: list[PaymentTransaction] = field(default_factory=list)
@@ -135,6 +137,7 @@ class Library:
             print(f'{lending.member.name}, {lending.book.name} You are late for some books. Please, give back them first.') 
         
         penalty = self.find_member_penalty(member=lending.member)
+        
         if penalty:
             print("Pay your penalty.")
 
@@ -147,6 +150,7 @@ class Library:
         active_same_lendings = list(filter(lambda transaction: transaction.member == lending.member and transaction.book == lending.book and transaction.is_active == True, self.lending_transactions))
         if active_same_lendings:
             print("You have this book.")
+            
         # Her türlü You have this book uyarısı alıyoruz . Bence lend book işlemi eğer yapılırsa is_active = False yapmamız gerekir. 
    
         self.lending_transactions.append(LendingTransaction(member=lending.member, book=lending.book, last_give_back_date=datetime.utcnow() + timedelta(days=self.default_lending_day)))
@@ -163,14 +167,16 @@ class Library:
             and transaction.give_back_date is not None 
             and transaction.last_give_back_date < transaction.give_back_date , 
             self.lending_transactions))
-        print(late_lendings)
+        #print(late_lendings)
 
         total_penalty = 0
         for transaction in late_lendings:
-            
             total_penalty += (transaction.give_back_date-transaction.last_give_back_date).days * self.daily_penalty_for_late_give_back
+            self.total_library_money += total_penalty
             if total_penalty != 0:
                 print(f'{transaction.member}, You need to pay {ceil(total_penalty)} £')
+                
+        
         
         #total_penalty = ceil(sum((transaction.give_back_date - transaction.last_give_back_date).days for transaction in late_lendings)) * self.daily_penalty_for_late_give_back
         
@@ -191,12 +197,25 @@ class Library:
         if active_giveback_books:
             self.lending_transactions.append(active_giveback_books)
             
-    # def total_library_money(self):
-        
     #     total_payment = sum(payment.amount for payment in self.payment_transactions)
-    #     print(total_payment) 
+    #     print(total_payment
+    def all_library_money(self):
+        print(f'Total Library Money: {self.total_library_money}')
 
-    
-    
- 
+    def payments(self, payment: PaymentTransaction):
+        late_lendings = list(filter(
+            lambda transaction: transaction.member == payment
+            and transaction.give_back_date is not None 
+            and transaction.last_give_back_date < transaction.give_back_date , 
+            self.lending_transactions))
+        #print(late_lendings)
+
+        total_penalty = 0
+         
+        for transaction in late_lendings:
+            total_penalty += (transaction.give_back_date-transaction.last_give_back_date).days * self.daily_penalty_for_late_give_back
+            self.total_library_money += total_penalty
+            
+
+        
     

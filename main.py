@@ -25,7 +25,7 @@ if __name__ == "__main__":
     richmond_library.register_member(member_serkan_uz)
     richmond_library.register_member(member_serkan_uz)
     richmond_library.register_member(member_utku_atak)
-    richmond_library.register_lending(lending1)
+    # richmond_library.register_lending(lending1)
     # richmond_library.register_lending(lending2)
     # richmond_library.register_lending(lending3)
     
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     # richmond_library.lend_book(member_serkan_uz,book_hortumlu_dunya)
     richmond_library.lend_book(lending1)
     richmond_library.lend_book(lending2)
-    richmond_library.lend_book(lending3)   
+    richmond_library.lend_book(lending3)   ### You have this book dese de borcu yine koyuyor kasaya.
 
     
 
@@ -50,3 +50,5 @@ if __name__ == "__main__":
     richmond_library.find_member_penalty(lending2)
 
     #richmond_library.total_library_money()
+
+    richmond_library.all_library_money()
