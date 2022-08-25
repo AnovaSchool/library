@@ -6,10 +6,14 @@ from telnetlib import EC
 import uuid
 from dateutil import parser
 from collections import Counter
+from datetime import date
 
 @dataclass
 class Person:
     name: str
+    def __str__(self):
+        
+        return self.name
 
 @dataclass
 class Member(Person):
@@ -44,6 +48,7 @@ class PaymentTransaction:
     member: Member
     amount: Decimal
     created_at: datetime = datetime.utcnow()
+    is_active : bool = False
 
 @dataclass
 class Library:
@@ -72,11 +77,17 @@ class Library:
 
     def register_book(self, book: Book):
         self.books.append(book)
+    
+    def register_lending(self, lending: LendingTransaction):
+        if lending in self.lending_transactions:
+            print("This transaction already done.")
+        else:
+            self.lending_transactions.append(lending)
 
     def active_book_list(self):
         # x = Counter(self.books)
         # a= [[x,self.books.count(x)] for x in set(self.books)]
-        
+        # biz bunu denedik de olmadı.
         i= 1
         for book in self.books:
             print(f"{i} : {book} ")
@@ -103,43 +114,25 @@ class Library:
             if transaction.book == book and transaction.member == member and transaction.is_active == True:
                 transaction = lending
         
-    def find_member_penalty(self, member: Member):
-        late_lendings = filter(
-            lambda transaction: transaction.member == member
-            and transaction.give_back_date is not None 
-            and transaction.last_give_back_date < transaction.give_back_date, 
-            self.lending_transactions)
-
-        total_penalty = 0
-        for transaction in late_lendings:
-            total_penalty += (transaction.give_back_date - transaction.last_give_back_date).days  * self.daily_penalty_for_late_give_back
-        total_penalty = ceil(total_penalty)
-        #total_penalty = ceil(sum((transaction.give_back_date - transaction.last_give_back_date).days for transaction in late_lendings)) * self.daily_penalty_for_late_give_back
-        
-        payments = filter(lambda transaction: transaction.member == member, self.payment_transactions)
-        total_payment = sum(payment.amount for payment in payments) 
-
-        if total_payment < total_penalty:
-            return total_penalty - total_payment
-        return 0
-            
+    
     
     def lend_book(self, member: Member, book: Book):
-        active_late_lendings = filter(
+        active_late_lendings = list(filter(
             lambda transaction: transaction.member == member \
                 and transaction.is_active == True \
-                and datetime.utcnow() < transaction.last_give_back_date, 
-            self.lending_transactions)
-
+                and datetime.utcnow() > transaction.last_give_back_date \
+                and transaction.give_back_date is None,
+            self.lending_transactions))
+        
         if active_late_lendings:
             print(f'{member.name}, {book.name} You are late for some books. Please, give back them first.') 
-        ### Her kitap alan birey için late for some books uyarısı vermekte. 
-           
+        
         penalty = self.find_member_penalty(member=member)
         if penalty:
             print("Pay your penalty.")
 
         active_lendings = list(filter(lambda transaction: transaction.member == member and transaction.is_active == True, self.lending_transactions))
+        # burada is_active = True olması gerekli mi ? 
         
         if len(active_lendings) >= self.default_lending_count:
             print("You have reached library book lending limit. Please, give back some of our books.")
@@ -147,11 +140,54 @@ class Library:
         active_same_lendings = list(filter(lambda transaction: transaction.member == member and transaction.book == book and transaction.is_active == True, self.lending_transactions))
         if active_same_lendings:
             print("You have this book.")
+        # Her türlü You have this book uyarısı alıyoruz . Bence lend book işlemi eğer yapılırsa is_active = False yapmamız gerekir. 
    
         self.lending_transactions.append(LendingTransaction(member=member, book=book, last_give_back_date=datetime.utcnow() + timedelta(days=self.default_lending_day)))
+        # burası self.lending_transactions'ın doldurulduğu yer 
+
+
     ## giveback geri verdiğimiz kitap 
     ## lend book kütüphaneden aldığımız kitap 
-    ## Alınan kitap book listten remove edilmeli. Ama kaç tane aynı kitaptan olduğunu saydıramıyoruz.
+    ## Alınan kitap book listten remove edilmeli. Ama kaç tane aynı kitaptan olduğunu saydıramıyoruz. #groupby kullan 
+
+
+
+    def show_lendings(self):
+        for lending in self.lending_transactions:
+            print(lending)
+
+
+
+    def find_member_penalty(self, member: LendingTransaction):
+        a = []
+        late_lendings = list(filter(
+            lambda transaction: transaction.member == member
+            and transaction.give_back_date is not None 
+            and transaction.last_give_back_date < transaction.give_back_date , 
+            self.lending_transactions))
+        a += late_lendings
+        print(a)
+        
+        
+        
+
+        total_penalty = 0
+        for transaction in late_lendings:
+            
+            total_penalty += (transaction.give_back_date-transaction.last_give_back_date).days * self.daily_penalty_for_late_give_back
+            if total_penalty != 0:
+                print(f'{transaction.member}, You need to pay {ceil(total_penalty)} £')
+        
+        #total_penalty = ceil(sum((transaction.give_back_date - transaction.last_give_back_date).days for transaction in late_lendings)) * self.daily_penalty_for_late_give_back
+        
+        payments = list(filter(lambda transaction: transaction.member == member, self.payment_transactions))
+        total_payment = sum(payment.amount for payment in payments)
+        
+
+        if total_payment < total_penalty:
+            return total_penalty - total_payment
+        return 0
+
     def giveback_book(self,member: Member, book: Book):
     
         active_giveback_books = filter(lambda transaction: transaction.member == member \
@@ -161,6 +197,10 @@ class Library:
         if active_giveback_books:
             self.lending_transactions.append(active_giveback_books)
             
+    # def total_library_money(self):
+        
+    #     total_payment = sum(payment.amount for payment in self.payment_transactions)
+    #     print(total_payment) 
 
     
     
