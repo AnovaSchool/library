@@ -1,3 +1,4 @@
+from typing import runtime_checkable
 from models import *
 
 if __name__ == "__main__":
@@ -13,6 +14,7 @@ if __name__ == "__main__":
 
     lending1 = LendingTransaction(member_utku_atak,book_python,last_give_back_date=datetime.strptime("20221201","%Y%m%d"),give_back_date=datetime.strptime("20221231","%Y%m%d"))
     lending2 = LendingTransaction(member_serkan_uz,book_python,last_give_back_date=datetime.strptime("20221201","%Y%m%d"),give_back_date=datetime.strptime("20221231","%Y%m%d"))
+    lending3 = LendingTransaction(member_serkan_uz,book_python,last_give_back_date=datetime.strptime("20221201","%Y%m%d"),give_back_date=datetime.strptime("20221231","%Y%m%d"))
 
     richmond_library.register_book(book_avucunuzdaki_kelebek)
     richmond_library.register_book(book_avucunuzdaki_kelebek)
@@ -24,10 +26,12 @@ if __name__ == "__main__":
     richmond_library.register_member(member_serkan_uz)
     richmond_library.register_member(member_utku_atak)
     richmond_library.register_lending(lending1)
-    richmond_library.register_lending(lending2)
-    richmond_library.show_lendings()
-
+    # richmond_library.register_lending(lending2)
+    # richmond_library.register_lending(lending3)
     
+    
+
+
     richmond_library.show_members()
 
     richmond_library.active_book_list()
@@ -36,8 +40,9 @@ if __name__ == "__main__":
     # richmond_library.lend_book(member_serkan_uz,book_avucunuzdaki_kelebek)
     # richmond_library.lend_book(member_serkan_uz,book_hortumlu_dunya)
     # richmond_library.lend_book(member_serkan_uz,book_hortumlu_dunya)
-    richmond_library.lend_book(member_serkan_uz,book_python)
-    richmond_library.lend_book(member_utku_atak,book_python)   
+    richmond_library.lend_book(lending1)
+    richmond_library.lend_book(lending2)
+    richmond_library.lend_book(lending3)   
 
     
 

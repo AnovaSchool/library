@@ -116,60 +116,54 @@ class Library:
         
     
     
-    def lend_book(self, member: Member, book: Book):
+    def lend_book(self, lending: LendingTransaction):
+
+        if lending in self.lending_transactions:
+            print("This transaction is already done.")
+        else: 
+            self.lending_transactions.append(lending)
+
+
         active_late_lendings = list(filter(
-            lambda transaction: transaction.member == member \
+            lambda transaction: transaction.member == lending.member \
                 and transaction.is_active == True \
                 and datetime.utcnow() > transaction.last_give_back_date \
                 and transaction.give_back_date is None,
             self.lending_transactions))
         
         if active_late_lendings:
-            print(f'{member.name}, {book.name} You are late for some books. Please, give back them first.') 
+            print(f'{lending.member.name}, {lending.book.name} You are late for some books. Please, give back them first.') 
         
-        penalty = self.find_member_penalty(member=member)
+        penalty = self.find_member_penalty(member=lending.member)
         if penalty:
             print("Pay your penalty.")
 
-        active_lendings = list(filter(lambda transaction: transaction.member == member and transaction.is_active == True, self.lending_transactions))
+        active_lendings = list(filter(lambda transaction: transaction.member == lending.member and transaction.is_active == True, self.lending_transactions))
         # burada is_active = True olması gerekli mi ? 
         
         if len(active_lendings) >= self.default_lending_count:
             print("You have reached library book lending limit. Please, give back some of our books.")
         
-        active_same_lendings = list(filter(lambda transaction: transaction.member == member and transaction.book == book and transaction.is_active == True, self.lending_transactions))
+        active_same_lendings = list(filter(lambda transaction: transaction.member == lending.member and transaction.book == lending.book and transaction.is_active == True, self.lending_transactions))
         if active_same_lendings:
             print("You have this book.")
         # Her türlü You have this book uyarısı alıyoruz . Bence lend book işlemi eğer yapılırsa is_active = False yapmamız gerekir. 
    
-        self.lending_transactions.append(LendingTransaction(member=member, book=book, last_give_back_date=datetime.utcnow() + timedelta(days=self.default_lending_day)))
+        self.lending_transactions.append(LendingTransaction(member=lending.member, book=lending.book, last_give_back_date=datetime.utcnow() + timedelta(days=self.default_lending_day)))
         # burası self.lending_transactions'ın doldurulduğu yer 
 
 
     ## giveback geri verdiğimiz kitap 
     ## lend book kütüphaneden aldığımız kitap 
-    ## Alınan kitap book listten remove edilmeli. Ama kaç tane aynı kitaptan olduğunu saydıramıyoruz. #groupby kullan 
-
-
-
-    def show_lendings(self):
-        for lending in self.lending_transactions:
-            print(lending)
-
-
+    ## Alınan kitap book listten remove edilmeli. Ama kaç tane aynı kitaptan olduğunu saydıramıyoruz. #groupby kullan
 
     def find_member_penalty(self, member: LendingTransaction):
-        a = []
         late_lendings = list(filter(
             lambda transaction: transaction.member == member
             and transaction.give_back_date is not None 
             and transaction.last_give_back_date < transaction.give_back_date , 
             self.lending_transactions))
-        a += late_lendings
-        print(a)
-        
-        
-        
+        print(late_lendings)
 
         total_penalty = 0
         for transaction in late_lendings:
