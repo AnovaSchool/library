@@ -96,34 +96,35 @@ class Library:
             i+= 1
             
     def give_back_book(self, member: Member, book: Book):
-        active_lendings = filter(
+        active_lendings = list(filter(
             lambda transaction: transaction.member == member \
                 and transaction.is_active == True \
                 and transaction.book == book, 
-            self.lending_transactions)
+            self.lending_transactions))
         if not active_lendings:
             raise Exception("This book is not yours.")
-
+        
         penalty = self.find_member_penalty(member=member)
         if penalty:
-            print("You have unpaid penalties. Please pay.")
+            print(f"{member}, You have unpaid penalties. Please pay.")
         
-        lending: LendingTransaction = active_lendings[0]
-        lending.give_back_date = datetime.utcnow()
-        lending.is_active = False
+        
 
         for transaction in self.lending_transactions:
             if transaction.book == book and transaction.member == member and transaction.is_active == True:
+                lending: LendingTransaction = active_lendings[0]
+                lending.give_back_date = datetime.utcnow()
+                lending.is_active = False
                 transaction = lending
         
-    
+        print(self.lending_transactions)
     
     def lend_book(self, lending: LendingTransaction):
 
-        if lending in self.lending_transactions:
-            print("This transaction is already done.")
-        else: 
-            self.lending_transactions.append(lending)
+        # if lending in self.lending_transactions:
+        #     print("This transaction is already done.")
+        # else: 
+        #     self.lending_transactions.append(lending)
 
 
         active_late_lendings = list(filter(
@@ -135,6 +136,8 @@ class Library:
         
         if active_late_lendings:
             print(f'{lending.member.name}, {lending.book.name} You are late for some books. Please, give back them first.') 
+        else:
+            pass
         
         penalty = self.find_member_penalty(member=lending.member)
         

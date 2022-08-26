@@ -25,15 +25,16 @@ if __name__ == "__main__":
     richmond_library.register_member(member_serkan_uz)
     richmond_library.register_member(member_serkan_uz)
     richmond_library.register_member(member_utku_atak)
-    # richmond_library.register_lending(lending1)
-    # richmond_library.register_lending(lending2)
-    # richmond_library.register_lending(lending3)
-    
+    richmond_library.register_lending(lending1)
+    richmond_library.register_lending(lending2)
+    richmond_library.register_lending(lending3)
+
+    richmond_library.give_back_book(member_utku_atak,book_python)
+
     richmond_library.show_members()
 
     richmond_library.active_book_list()
     
-
     # richmond_library.lend_book(member_serkan_uz,book_avucunuzdaki_kelebek)
     # richmond_library.lend_book(member_serkan_uz,book_hortumlu_dunya)
     # richmond_library.lend_book(member_serkan_uz,book_hortumlu_dunya)
