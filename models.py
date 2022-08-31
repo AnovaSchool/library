@@ -121,12 +121,6 @@ class Library:
     
     def lend_book(self, lending: LendingTransaction):
 
-        # if lending in self.lending_transactions:
-        #     print("This transaction is already done.")
-        # else: 
-        #     self.lending_transactions.append(lending)
-
-
         active_late_lendings = list(filter(
             lambda transaction: transaction.member == lending.member \
                 and transaction.is_active == True \
@@ -151,7 +145,7 @@ class Library:
             print("You have reached library book lending limit. Please, give back some of our books.")
         
         active_same_lendings = list(filter(lambda transaction: transaction.member == lending.member and transaction.book == lending.book and transaction.is_active == True, self.lending_transactions))
-        if active_same_lendings:
+        if active_same_lendings in self.lending_transactions:
             print("You have this book.")
             
         # Her türlü You have this book uyarısı alıyoruz . Bence lend book işlemi eğer yapılırsa is_active = False yapmamız gerekir. 
@@ -204,21 +198,4 @@ class Library:
     #     print(total_payment
     def all_library_money(self):
         print(f'Total Library Money: {self.total_library_money}')
-
-    def payments(self, payment: PaymentTransaction):
-        late_lendings = list(filter(
-            lambda transaction: transaction.member == payment
-            and transaction.give_back_date is not None 
-            and transaction.last_give_back_date < transaction.give_back_date , 
-            self.lending_transactions))
-        #print(late_lendings)
-
-        total_penalty = 0
-         
-        for transaction in late_lendings:
-            total_penalty += (transaction.give_back_date-transaction.last_give_back_date).days * self.daily_penalty_for_late_give_back
-            self.total_library_money += total_penalty
-            
-
-        
     

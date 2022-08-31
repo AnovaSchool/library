@@ -15,6 +15,7 @@ if __name__ == "__main__":
     lending1 = LendingTransaction(member_utku_atak,book_python,last_give_back_date=datetime.strptime("20221201","%Y%m%d"),give_back_date=datetime.strptime("20221231","%Y%m%d"))
     lending2 = LendingTransaction(member_serkan_uz,book_python,last_give_back_date=datetime.strptime("20221201","%Y%m%d"),give_back_date=datetime.strptime("20221231","%Y%m%d"))
     lending3 = LendingTransaction(member_serkan_uz,book_python,last_give_back_date=datetime.strptime("20221201","%Y%m%d"),give_back_date=datetime.strptime("20221231","%Y%m%d"))
+    lending4 = LendingTransaction(member_utku_atak,book_nutuk,last_give_back_date=datetime.strptime("20221201","%Y%m%d"),give_back_date=datetime.strptime("20221231","%Y%m%d"))
 
     richmond_library.register_book(book_avucunuzdaki_kelebek)
     richmond_library.register_book(book_avucunuzdaki_kelebek)
@@ -28,6 +29,7 @@ if __name__ == "__main__":
     richmond_library.register_lending(lending1)
     richmond_library.register_lending(lending2)
     richmond_library.register_lending(lending3)
+    richmond_library.register_lending(lending4)
 
     richmond_library.give_back_book(member_utku_atak,book_python)
 
@@ -41,6 +43,7 @@ if __name__ == "__main__":
     richmond_library.lend_book(lending1)
     richmond_library.lend_book(lending2)
     richmond_library.lend_book(lending3)   ### You have this book dese de borcu yine koyuyor kasaya.
+    richmond_library.lend_book(lending4)   
 
     
 
